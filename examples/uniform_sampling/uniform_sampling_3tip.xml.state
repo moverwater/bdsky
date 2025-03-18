@@ -1,0 +1,15 @@
+<itsabeastystatewerein version='2.0' sample='200000000'>
+<statenode id='tree'>(1:1.8254425389269806,(0:2.6228674522476525,2:0.6228674522476525)3:0.2025750866793281)4:0.0</statenode>
+<statenode id='rho'>rho[3 1] (0.0,1.0): 0.008813829545357825 0.013182817903911 0.0018007175112185836 </statenode>
+</itsabeastystatewerein>
+<!--
+{"operators":[
+{"id":"rho_scaler","p":0.13915784451711347,"accept":3198385,"reject":9561241,"acceptFC":3194743,"rejectFC":9560528,"rejectIv":338372,"rejectOp":338372},
+{"id":"LeafToSA","p":"NaN","accept":3992204,"reject":38567036,"acceptFC":3989202,"rejectFC":38555907,"rejectIv":25882881,"rejectOp":25854450},
+{"id":"SAWilsonBalding","p":"NaN","accept":14388251,"reject":28164898,"acceptFC":14382063,"rejectFC":28156955,"rejectIv":13559900,"rejectOp":10594485},
+{"id":"SAWide","p":"NaN","accept":11667160,"reject":30889931,"acceptFC":11664451,"rejectFC":30878443,"rejectIv":30889931,"rejectOp":30889931},
+{"id":"SAUniformOperator","p":"NaN","accept":30843991,"reject":11707396,"acceptFC":30834683,"rejectFC":11702363,"rejectIv":5152552,"rejectOp":5152552},
+{"id":"SATreeRootScaler","p":0.3246080630739487,"accept":726792,"reject":3529969,"acceptFC":725642,"rejectFC":3529655,"rejectIv":3306686,"rejectOp":818167},
+{"id":"SATreeScaler","p":0.28702919805476895,"accept":2116616,"reject":10646131,"acceptFC":2115636,"rejectFC":10642929,"rejectIv":9726268,"rejectOp":1643738}
+]}
+-->

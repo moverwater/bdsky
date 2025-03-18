@@ -1,0 +1,80 @@
+<beast namespace="beast.pkgmgmt
+                 :beast.base.core
+                 :beast.base.inference
+                 :beast.base.evolution.alignment
+                 :beast.base.evolution.tree.coalescent
+                 :beast.base.util:beast.base.math
+                 :beast.evolution.nuc
+                 :beast.base.evolution.operator
+                 :beast.base.inference.operator
+                 :beast.base.evolution.sitemodel
+                 :beast.base.evolution.substitutionmodel
+                 :beast.base.evolution.likelihood
+                 :beast.base.evolution.speciation
+                 :beast.base.core
+                 :beast.base.inference.parameter
+                 :sa.evolution.operators" version="2.0">
+
+    <run chainLength="200000000" id="mcmc" spec="MCMC" storeEvery="1000">
+
+        <state id="state" storeEvery="100000">
+            <stateNode id='tree' spec="beast.base.evolution.tree.coalescent.RandomTree">
+                <taxa id="alignment" spec="beast.base.evolution.alignment.Alignment">
+                    <sequence taxon="t0" value="?"/>
+                    <sequence taxon="t1" value="?"/>
+                    <sequence taxon="t2" value="?"/>
+                </taxa>
+                <trait spec="beast.base.evolution.tree.TraitSet" traitname="age">
+                    t0=0.0,
+                    t1=1.0,
+                    t2=2.0
+                    <taxa spec="beast.base.evolution.alignment.TaxonSet">
+                        <alignment idref="alignment"/>
+                    </taxa>
+                </trait>
+                <populationModel spec="beast.base.evolution.tree.coalescent.ConstantPopulation" popSize="1"/>
+            </stateNode>
+            <stateNode idref='rho'/>
+        </state>
+
+        <distribution spec="bdsky.evolution.speciation.JointTreeAndRho"
+                      id="birthDeath" tree="@tree">
+            <origin spec="beast.base.inference.parameter.RealParameter" value="5"/>
+            <birthRate spec="beast.base.inference.parameter.RealParameter" value="2"/>
+            <deathRate spec="beast.base.inference.parameter.RealParameter" value="1"/>
+            <samplingRate spec="beast.base.inference.parameter.RealParameter" value="0.0"/>
+            <removalProbability spec="beast.base.inference.parameter.RealParameter" value="0.0"/>
+            <rho id="rho" spec="beast.base.inference.parameter.RealParameter"
+                 value ="0.1" dimension="3" lower="0.0" upper="1.0"/>
+        </distribution>
+
+        <!-- parameter weights for RealParameters roughly equal to parameter dimension -->
+        <operator id='rho_scaler' spec='ScaleOperator' scaleFactor="0.75" weight="3" parameter="@rho"/>
+
+        <!--these operators are in SA package-->
+        <operator id="LeafToSA" spec="LeafToSampledAncestorJump" tree="@tree" weight="10.0"/>
+        <operator id="SAWilsonBalding" spec="SAWilsonBalding" tree="@tree" weight="10.0"/>
+        <operator id="SAWide" spec="SAExchange" isNarrow="false" tree="@tree" weight="10.0"/>
+        <!--        <operator id="SANarrow" spec="SAExchange" tree="@tree" weight="10.0"/>-->
+        <operator id="SAUniformOperator" spec="SAUniform" tree="@tree" weight="10.0"/>
+        <operator id="SATreeRootScaler" spec="SAScaleOperator" rootOnly="true" scaleFactor="0.95" tree="@tree" weight="1.0"/>
+        <operator id="SATreeScaler" spec="SAScaleOperator" scaleFactor="0.363" tree="@tree" weight="3.0"/>
+
+        <logger fileName="$(filebase).log" id="tracelog" logEvery="1000" mode="autodetect">
+            <log idref="birthDeath"/>
+            <log id="treeStats" spec="beast.base.evolution.tree.TreeStatLogger" tree="@tree"/>
+            <log idref='rho'/>
+        </logger>
+
+        <logger id="screenlog" logEvery="10000" mode="autodetect">
+            <log arg="@birthDeath" id="ESS.0" spec="util.ESS"/>
+            <log idref="birthDeath"/>
+        </logger>
+
+        <logger fileName="$(filebase).trees" id="treelog" logEvery="10000" mode="tree">
+            <log idref="tree"/>
+        </logger>
+
+    </run>
+
+</beast>

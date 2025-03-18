@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="locallib3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../beastfx/locallib/testfx.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../beastfx/locallib/assertj-core-3.20.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../beastfx/locallib/jam.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
