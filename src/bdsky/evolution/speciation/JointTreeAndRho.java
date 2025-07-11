@@ -104,7 +104,7 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
 //        ++counter;
         logP = super.calculateTreeLogLikelihood(tree); //computes density of the tree given rho
 
-        for (Double thisRho : m_rho.get().getValues()) { // adjusts for the joint density of the tree and rho
+        for (Double thisRho : m_rho.get().getDoubleValues()) { // adjusts for the joint density of the tree and rho
             logP = logP - Math.log(thisRho);
         }
         if (SAModel)
