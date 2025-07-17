@@ -17,6 +17,7 @@
         <provider classname="bdsky.JointDiversificationTurnoverOperator"/>
         <provider classname="bdsky.evolution.speciation.ConditionOnRhoSamples"/>
         <provider classname="bdsky.MarginalLikelihoodVarianceLogger"/>
-    </service>
+        <provider classname="bdsky.evolution.speciation.TreeTipPerturber"/>
+   </service>
 
 </package>

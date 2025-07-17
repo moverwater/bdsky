@@ -34,25 +34,30 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
 
     @Override
     public void initAndValidate() {
-
-        approxMarginal = approximateMarginalLikelihoodInput.get();
-
         tree = treeInput.get();
-
-//      Perturb tip heights
         List<Node> leaves = tree.getExternalNodes();
+
         double epsilon = 1e-4;
 
 // Sort leaves by height (smallest first)
         leaves.sort(Comparator.comparingDouble(Node::getHeight));
-        StringBuilder leafTimes = new StringBuilder();
 
         for (int i = 0; i < leaves.size(); i++) {
             Node leaf = leaves.get(i);
             double originalHeight = leaf.getHeight();
-            leaf.setHeight(originalHeight + i * epsilon); // Apply small offset
-            leafTimes.append(leaf.getHeight()).append(" "); // Set rho sampling times to leaf heights
+            double newHeight = originalHeight + i * epsilon;
+            leaf.setHeight(newHeight); // Apply small offset
         }
+
+        StringBuilder leafTimes = new StringBuilder();
+
+        for (Node leaf : leaves) {
+            leafTimes.append(leaf.getHeight()).append(" ");
+        }
+
+        rhoSamplingTimes.setValue(leafTimes.toString(),this);
+
+        approxMarginal = approximateMarginalLikelihoodInput.get();
 
         if (approxMarginal) {
             if (numberOfMonteCarloSamplesInput.get() != null) {
@@ -62,10 +67,9 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
                 numSamples = 1000;
             }
         }
-        rhoSamplingTimes.setValue(leafTimes.toString(), this);// sets the leaf times to the rho sampling times
+
         reverseTimeArraysInput.setValue("true true true true true",this);// sets reverseTimeArraysInput to true for all time arrays
         conditionOnSurvival.setValue("false",this);
-
         super.initAndValidate();
     }
 
@@ -99,9 +103,9 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
         survivalProb = 1 - P0[0];
         return survivalProb;
     }
-//    static int counter = 0;
+    static int counter = 0;
     public double calculateJointTreeAndRho(TreeInterface tree) {
-//        ++counter;
+        ++counter;
         logP = super.calculateTreeLogLikelihood(tree); //computes density of the tree given rho
 
         for (Double thisRho : m_rho.get().getDoubleValues()) { // adjusts for the joint density of the tree and rho
@@ -125,6 +129,7 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
 
     @Override
     public double calculateTreeLogLikelihood(TreeInterface tree) {
+//        perturbLeafTimes(tree);
 //        System.out.println(++count);
         if (approxMarginal) {
 
@@ -194,10 +199,16 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
         return logP;
     }
 
+    @Override
+    public boolean requiresRecalculation() {
+        super.requiresRecalculation();
+        return true;
+    }
+
     public static void main(String[] args) {
 
         Tree tree = new TreeParser();
-        tree.initByName("newick", "((A:2,B:1):1,C:1):0;",
+        tree.initByName("newick", "((A:2,B:2):1,C:3):0;",
                 "adjustTipHeights", false,
                 "IsLabelledNewick", true);
 
