@@ -129,8 +129,7 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
 
     @Override
     public double calculateTreeLogLikelihood(TreeInterface tree) {
-//        perturbLeafTimes(tree);
-//        System.out.println(++count);
+
         if (approxMarginal) {
 
             int dim = rhoSamplingTimes.get().getDimension();
@@ -197,12 +196,6 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
             logP = calculateJointTreeAndRho(tree);
         }
         return logP;
-    }
-
-    @Override
-    public boolean requiresRecalculation() {
-        super.requiresRecalculation();
-        return true;
     }
 
     public static void main(String[] args) {
