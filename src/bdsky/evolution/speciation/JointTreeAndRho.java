@@ -40,15 +40,15 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
         double epsilon = 1e-4;
 
 // Sort leaves by height (smallest first)
-        leaves.sort(Comparator.comparingDouble(Node::getHeight));
-
-        for (int i = 0; i < leaves.size(); i++) {
-            Node leaf = leaves.get(i);
-            double originalHeight = leaf.getHeight();
-            double newHeight = originalHeight + i * epsilon;
-            leaf.setHeight(newHeight); // Apply small offset
-        }
-
+//        leaves.sort(Comparator.comparingDouble(Node::getHeight));
+//
+//        for (int i = 0; i < leaves.size(); i++) {
+//            Node leaf = leaves.get(i);
+//            double originalHeight = leaf.getHeight();
+//            double newHeight = originalHeight + i * epsilon;
+//            leaf.setHeight(newHeight); // Apply small offset
+//        }
+//
         StringBuilder leafTimes = new StringBuilder();
 
         for (Node leaf : leaves) {
@@ -101,6 +101,9 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
             P0[0] = p0(birth[1], death[1], psi[1], ai[1], bi[1], times[1], 0);
         double survivalProb;
         survivalProb = 1 - P0[0];
+        if (survivalProb == 0.0){
+            return Double.NEGATIVE_INFINITY;
+        }
         return survivalProb;
     }
     static int counter = 0;
