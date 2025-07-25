@@ -40,15 +40,15 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
         double epsilon = 1e-4;
 
 // Sort leaves by height (smallest first)
-//        leaves.sort(Comparator.comparingDouble(Node::getHeight));
-//
-//        for (int i = 0; i < leaves.size(); i++) {
-//            Node leaf = leaves.get(i);
-//            double originalHeight = leaf.getHeight();
-//            double newHeight = originalHeight + i * epsilon;
-//            leaf.setHeight(newHeight); // Apply small offset
-//        }
-//
+        leaves.sort(Comparator.comparingDouble(Node::getHeight));
+
+        for (int i = 0; i < leaves.size(); i++) {
+            Node leaf = leaves.get(i);
+            double originalHeight = leaf.getHeight();
+            double newHeight = originalHeight + i * epsilon;
+            leaf.setHeight(newHeight); // Apply small offset
+        }
+
         StringBuilder leafTimes = new StringBuilder();
 
         for (Node leaf : leaves) {
@@ -106,9 +106,9 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
         }
         return survivalProb;
     }
-    static int counter = 0;
+//    static int counter = 0;
     public double calculateJointTreeAndRho(TreeInterface tree) {
-        ++counter;
+//        ++counter;
         logP = super.calculateTreeLogLikelihood(tree); //computes density of the tree given rho
 
         for (Double thisRho : m_rho.get().getDoubleValues()) { // adjusts for the joint density of the tree and rho
