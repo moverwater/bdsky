@@ -6,6 +6,7 @@
         <provider classname="bdsky.evolution.speciation.BirthDeathSkylineDiversifiedSampling"/>
         <provider classname="bdsky.evolution.speciation.JointTreeAndRho"/>
         <provider classname="bdsky.evolution.speciation.BirthDeathSkylineModel"/>
+        <provider classname="bdsky.util.PerturbedTraitSet"/>
  		<provider classname="bdsky.CanonicalParameterization"/>
         <provider classname="bdsky.FlexibleSkyline"/>
         <provider classname="bdsky.MultiSkyline"/>

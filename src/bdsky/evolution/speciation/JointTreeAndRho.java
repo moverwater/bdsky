@@ -35,27 +35,15 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
     @Override
     public void initAndValidate() {
         tree = treeInput.get();
-        List<Node> leaves = tree.getExternalNodes();
-
-        double epsilon = 1e-4;
 
 // Sort leaves by height (smallest first)
-        leaves.sort(Comparator.comparingDouble(Node::getHeight));
+        double[] leafHeights = tree.getExternalNodes().stream()
+                .mapToDouble(Node::getHeight).sorted().toArray();
 
-        for (int i = 0; i < leaves.size(); i++) {
-            Node leaf = leaves.get(i);
-            double originalHeight = leaf.getHeight();
-            double newHeight = originalHeight + i * epsilon;
-            leaf.setHeight(newHeight); // Apply small offset
-        }
-
-        StringBuilder leafTimes = new StringBuilder();
-
-        for (Node leaf : leaves) {
-            leafTimes.append(leaf.getHeight()).append(" ");
-        }
-
-        rhoSamplingTimes.setValue(leafTimes.toString(),this);
+        StringBuilder leafTimeString = new StringBuilder();
+        for (double leafHeight : leafHeights)
+            leafTimeString.append(leafHeight).append(" ");
+        rhoSamplingTimes.setValue(leafTimeString.toString(),this);
 
         approxMarginal = approximateMarginalLikelihoodInput.get();
 
@@ -91,9 +79,9 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
             for (int i = totalIntervals - 2; i >= 0; i--) {
                 P0[i + 1] = p0(birth[i + 1], death[i + 1], psi[i + 1], ai[i + 1], bi[i + 1], times[i + 1], times[i]);
 
-                if (Math.abs(P0[i + 1] - 1) < 1e-10) {
-                    return Double.NEGATIVE_INFINITY;
-                }
+//                if (Math.abs(P0[i + 1] - 1) < 1e-10) {
+//                    return Double.NEGATIVE_INFINITY;
+//                }
 
                 bi[i] = Bi(birth[i], death[i], psi[i], 0.0, ai[i], P0[i + 1]);
             }
