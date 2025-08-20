@@ -94,9 +94,8 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
         }
         return survivalProb;
     }
-//    static int counter = 0;
+
     public double calculateJointTreeAndRho(TreeInterface tree) {
-//        ++counter;
         logP = super.calculateTreeLogLikelihood(tree); //computes density of the tree given rho
 
         for (Double thisRho : m_rho.get().getDoubleValues()) { // adjusts for the joint density of the tree and rho
@@ -120,7 +119,6 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
 
     @Override
     public double calculateTreeLogLikelihood(TreeInterface tree) {
-
         if (approxMarginal) {
 
             int dim = rhoSamplingTimes.get().getDimension();

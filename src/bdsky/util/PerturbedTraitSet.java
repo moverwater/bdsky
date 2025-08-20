@@ -48,8 +48,13 @@ public class PerturbedTraitSet extends TraitSet {
             if (seenValues.contains(values[i])) {
                 double perturbedValue;
                 do {
+                    if(values[i] < 0.5*epsilon){
+                        perturbedValue = epsilon*Randomizer.nextDouble();
+                    }
+                    else{
                     perturbedValue = values[i]
                             - 0.5*epsilon + Randomizer.nextDouble()*epsilon;
+                    }
                 } while (seenValues.contains(perturbedValue));
                 values[i] = perturbedValue;
             } else {
