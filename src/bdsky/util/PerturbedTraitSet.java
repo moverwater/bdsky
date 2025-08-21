@@ -52,8 +52,8 @@ public class PerturbedTraitSet extends TraitSet {
                         perturbedValue = epsilon*Randomizer.nextDouble();
                     }
                     else{
-                    perturbedValue = values[i]
-                            - 0.5*epsilon + Randomizer.nextDouble()*epsilon;
+                        perturbedValue = values[i]
+                                - 0.5*epsilon + Randomizer.nextDouble()*epsilon;
                     }
                 } while (seenValues.contains(perturbedValue));
                 values[i] = perturbedValue;
