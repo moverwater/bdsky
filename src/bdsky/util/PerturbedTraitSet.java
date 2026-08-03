@@ -3,9 +3,11 @@ package bdsky.util;
 import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.evolution.tree.TraitSet;
+import beast.base.inference.parameter.RealParameter;
 import beast.base.util.Randomizer;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,8 +23,13 @@ public class PerturbedTraitSet extends TraitSet {
             "Trait set from which to take values for this trait set.",
             Input.Validate.REQUIRED);
 
+    public Input<Integer> seedInput = new Input<>("seed", "seed for PRNG", 42);
+
+    private Random random = new Random();
+
     public PerturbedTraitSet() {
         traitsInput.setRule(Input.Validate.OPTIONAL);
+        random.setSeed(seedInput.get());
     }
 
     public void initAndValidate() {
@@ -49,11 +56,11 @@ public class PerturbedTraitSet extends TraitSet {
                 double perturbedValue;
                 do {
                     if(values[i] < 0.5*epsilon){
-                        perturbedValue = epsilon*Randomizer.nextDouble();
+                        perturbedValue = epsilon*random.nextDouble();
                     }
                     else{
                         perturbedValue = values[i]
-                                - 0.5*epsilon + Randomizer.nextDouble()*epsilon;
+                                - 0.5*epsilon + random.nextDouble()*epsilon;
                     }
                 } while (seenValues.contains(perturbedValue));
                 values[i] = perturbedValue;

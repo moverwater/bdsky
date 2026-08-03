@@ -6,6 +6,7 @@ import beast.base.evolution.tree.Node;
 import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeInterface;
 import beast.base.evolution.tree.TreeParser;
+import beast.base.inference.parameter.BooleanParameter;
 import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
 
@@ -22,14 +23,14 @@ import java.util.List;
 
 public class JointTreeAndRho extends BirthDeathSkylineModel {
     public Input<Boolean> approximateMarginalLikelihoodInput =
-            new Input<Boolean>("approximateMarginalLikelihoodInput", "Boolean, true if you want the approximate the marginal likelihood with a monte-carlo estimate, otherwise sample rho as part of the state space", false);
+            new Input<>("approximateMarginalLikelihoodInput", "Boolean, true if you want the approximate the marginal likelihood with a monte-carlo estimate, otherwise sample rho as part of the state space", false);
 
     public Input<IntegerParameter> numberOfMonteCarloSamplesInput =
-            new Input<IntegerParameter>("numberOfMonteCarloSamples","The number of samples in the Monte Carlo estimate of the marginal likelihood if approximateMarginalLikelihoodInput is true, default 1000", (IntegerParameter) null);
+            new Input<>("numberOfMonteCarloSamples","The number of samples in the Monte Carlo estimate of the marginal likelihood if approximateMarginalLikelihoodInput is true, default 1000", (IntegerParameter) null);
 
-    protected Double mlVar;
+    protected double mlVar;
     private Boolean approxMarginal;
-    private Integer numSamples;
+    private int numSamples;
     protected TreeInterface tree;
 
     @Override
@@ -98,7 +99,7 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
     public double calculateJointTreeAndRho(TreeInterface tree) {
         logP = super.calculateTreeLogLikelihood(tree); //computes density of the tree given rho
 
-        for (Double thisRho : m_rho.get().getDoubleValues()) { // adjusts for the joint density of the tree and rho
+        for (double thisRho : m_rho.get().getDoubleValues()) { // adjusts for the joint density of the tree and rho
             logP = logP - Math.log(thisRho);
         }
         if (SAModel)
@@ -189,26 +190,50 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
 
     public static void main(String[] args) {
 
-        Tree tree = new TreeParser();
-        tree.initByName("newick", "((A:2,B:2):1,C:3):0;",
-                "adjustTipHeights", false,
-                "IsLabelledNewick", true);
+//        Tree tree = new TreeParser();
+//        tree.initByName("newick", "((A:2,B:2):1,C:3):0;",
+//                "adjustTipHeights", false,
+//                "IsLabelledNewick", true);
+//
+//        System.out.println(tree);
+//
+//        JointTreeAndRho jtar = new JointTreeAndRho();
+//        jtar.initByName(
+//                "tree", tree,
+//                "origin", new RealParameter("5.0"),
+//                "reproductiveNumber", new RealParameter("0.2"),
+//                "becomeUninfectiousRate", new RealParameter("1.0"),
+//                "samplingProportion", new RealParameter("0.0"),
+//                "rho", new RealParameter("0.1 0.1 0.1"),
+//                "removalProbability", new RealParameter("0.0")
+//        );
+//        System.out.println(jtar.totalIntervals);
+//        System.out.println("logP=" + jtar.calculateLogP());
+//        System.out.println("1-p0=" + jtar.calculateSurvivalProbability());
+//        System.out.println("isRhoTip=" + Arrays.toString(jtar.isRhoTip));
 
-        System.out.println(tree);
+        RealParameter birthRate = new RealParameter("3.0 2.0");
+        RealParameter deathRate = new RealParameter("1.0");
+        RealParameter rho = new RealParameter("0.5");
+        RealParameter origin = new RealParameter("6.1");
 
-        JointTreeAndRho jtar = new JointTreeAndRho();
-        jtar.initByName(
-                "tree", tree,
-                "origin", new RealParameter("5.0"),
-                "reproductiveNumber", new RealParameter("0.2"),
-                "becomeUninfectiousRate", new RealParameter("1.0"),
-                "samplingProportion", new RealParameter("0.0"),
-                "rho", new RealParameter("0.1 0.1 0.1"),
-                "removalProbability", new RealParameter("0.0")
+        Tree tallTree = new TreeParser();
+        tallTree.initByName("newick", "((A:3,B:3):3,C:6);",
+                "IsLabelledNewick", true, "adjustTipHeights", true);
+
+        BirthDeathSkylineModel model = new BirthDeathSkylineModel();
+        model.initByName(
+                "birthRate", birthRate,
+                "deathRate", deathRate,
+//                "birthRateChangeTimes", new RealParameter("0.0 0.5"),
+//                "reverseTimeArrays", new BooleanParameter("true true true true true"),
+                "samplingRate", new RealParameter("0.0"),
+                "rho", rho,
+                "tree", tallTree, // Pass the valid tree first
+                "origin", origin,
+                "conditionOnRoot", false,
+                "conditionOnSurvival", true
         );
-        System.out.println(jtar.totalIntervals);
-        System.out.println("logP=" + jtar.calculateLogP());
-        System.out.println("1-p0=" + jtar.calculateSurvivalProbability());
-        System.out.println("isRhoTip=" + Arrays.toString(jtar.isRhoTip));
+        System.out.println("logP=" + model.calculateTreeLogLikelihood(tallTree));
     }
 }
