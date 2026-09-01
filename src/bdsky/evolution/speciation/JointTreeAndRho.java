@@ -37,9 +37,11 @@ public class JointTreeAndRho extends BirthDeathSkylineModel {
     public void initAndValidate() {
         tree = treeInput.get();
 
-// Sort leaves by height (smallest first)
+// Collect the distinct leaf heights, sorted (smallest first). Distinct is required
+// so that multiple tips sharing a time (e.g. contemporaneous/extant samples) collapse
+// to a single rho-sampling time, matching one rho value per distinct sampling time.
         double[] leafHeights = tree.getExternalNodes().stream()
-                .mapToDouble(Node::getHeight).sorted().toArray();
+                .mapToDouble(Node::getHeight).distinct().sorted().toArray();
 
         StringBuilder leafTimeString = new StringBuilder();
         for (double leafHeight : leafHeights)
